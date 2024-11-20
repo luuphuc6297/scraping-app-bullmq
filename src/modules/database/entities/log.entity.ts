@@ -1,3 +1,5 @@
+import { ProcessingStatus } from 'src/infrastructure/constants/status.enum'
+import { LogType } from 'src/modules/database/logs/dtos/create-logs.dto'
 import {
     Column,
     CreateDateColumn,
@@ -7,8 +9,6 @@ import {
     PrimaryGeneratedColumn,
 } from 'typeorm'
 import { Scrape } from './scrape.entity'
-import { LogType } from '../logs/dtos/create-logs.dto'
-import { ProcessingStatus } from 'src/infrastructure/constants/status.enum'
 
 @Entity('logs')
 export class Log {

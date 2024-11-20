@@ -5,9 +5,9 @@ import { Job } from 'bullmq'
 import { QUEUE_SCRAPING_CONFIG } from 'src/infrastructure/constants/queue.constants'
 import { ScrapeStatus } from 'src/infrastructure/constants/scrape.enum'
 import { ProcessingStatus } from 'src/infrastructure/constants/status.enum'
-import { LogType } from '../database/logs/dtos/create-logs.dto'
-import { LogService } from '../database/logs/logs.service'
-import { ScrapeService } from '../database/scraper/services/scraper.services'
+import { LogType } from 'src/modules/database/logs/dtos/create-logs.dto'
+import { LogService } from 'src/modules/database/logs/logs.service'
+import { ScrapeService } from 'src/modules/database/scraper/services/scraper.services'
 
 @Processor(QUEUE_SCRAPING_CONFIG.QUEUE_NAME)
 export class MainProcessor extends WorkerHost {
