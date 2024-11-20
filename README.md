@@ -26,74 +26,80 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Project setup
+# Web Scraping Service with BullMQ
 
-```bash
-$ pnpm install
-```
+A robust web scraping service built with NestJS, featuring queue processing, monitoring, and scalability.
 
-## Compile and run the project
+## 🚀 Features
 
-```bash
-# development
-$ pnpm run start
+- Dual scraping strategies (Cheerio and Puppeteer)
+- Queue management with BullMQ
+- Resource monitoring
+- Metrics collection with Prometheus
+- Visualization with Grafana
+- Database persistence with PostgreSQL
+- Caching with Redis
+- Docker containerization
+- Health checks and monitoring
+- URL validation and analysis
+- Duplicate detection
+- Error handling and retries
+- Transaction management
 
-# watch mode
-$ pnpm run start:dev
+## 📋 Tech Stack
 
-# production mode
-$ pnpm run start:prod
-```
+### Core
+- [NestJS](https://nestjs.com/) - Progressive Node.js framework
+- [TypeScript](https://www.typescriptlang.org/) - JavaScript with syntax for types
+- [Node.js](https://nodejs.org/) - JavaScript runtime
 
-## Run tests
+### Scraping
+- [Cheerio](https://cheerio.js.org/) - Fast, flexible implementation of jQuery for server-side scraping
+- [Puppeteer](https://pptr.dev/) - Headless Chrome Node.js API for dynamic content scraping
 
-```bash
-# unit tests
-$ pnpm run test
+### Queue Management
+- [BullMQ](https://docs.bullmq.io/) - Queue management system
+- [Bull Board](https://github.com/felixmosh/bull-board) - Queue monitoring UI
 
-# e2e tests
-$ pnpm run test:e2e
+### Database
+- [PostgreSQL](https://www.postgresql.org/) - Primary database
+- [TypeORM](https://typeorm.io/) - ORM for database operations
+- [PgAdmin](https://www.pgadmin.org/) - PostgreSQL administration
 
-# test coverage
-$ pnpm run test:cov
-```
+### Caching & Queue
+- [Redis](https://redis.io/) - In-memory data store
 
-## Deployment
+### Monitoring
+- [Prometheus](https://prometheus.io/) - Metrics collection
+- [Grafana](https://grafana.com/) - Metrics visualization
+- Custom resource monitoring
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## 🛠 Installation
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Prerequisites
+- Node.js (v18 or later)
+- Docker and Docker Compose
+- pnpm (recommended) or npm
 
-```bash
-$ pnpm install -g mau
-$ mau deploy
-```
+### Using Docker Compose (Recommended)
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+1. Clone the repository:
 
-## Resources
+2. Create `.env` file with required environment variables:
 
-Check out a few resources that may come in handy when working with NestJS:
+3. Start the services:
+- bash
+- docker-compose up -d
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+### Local Development
 
-## Support
+1. Install dependencies:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
+2. Start required services (PostgreSQL, Redis):
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
-## License
+3. Start the application:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- bash
+- pnpm start:dev
