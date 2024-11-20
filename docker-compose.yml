@@ -1,0 +1,148 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: scraper-app
+    ports:
+      - "${PORT}:3000"
+    environment:
+      - NODE_ENV=development
+      - API_KEY=${API_KEY}
+      - PROMETHEUS_PORT=${PROMETHEUS_PORT}
+      - GRAFANA_PORT=${GRAFANA_PORT}
+      - PGADMIN_PORT=${PGADMIN_PORT}
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - BULL_BOARD_PORT=${BULL_BOARD_PORT}
+      - PROXY_PATH=${PROXY_PATH}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - app-network
+    deploy:
+      resources:
+        limits:
+          cpus: '8'
+          memory: 8G
+
+  postgres:
+    image: postgres:14-alpine
+    container_name: scraper-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7.0.8-alpine
+    container_name: scraper-redis
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: scraper-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "${PGADMIN_PORT}:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+  grafana:
+    image: grafana/grafana
+    container_name: scraper-grafana
+    ports:
+      - "${GRAFANA_PORT}:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    networks:
+      - app-network
+
+  prometheus:
+    image: prom/prometheus
+    container_name: scraper-prometheus
+    ports:
+      - "${PROMETHEUS_PORT}:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - app-network
+  
+  bullboard:
+    image: venatum/bull-board:latest
+    container_name: scraper-bull-board
+    ports:
+      - "${BULL_BOARD_PORT}:9091"
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PROXY_PATH=${PROXY_PATH}
+      - BULL_PREFIX=bull
+      - REDIS_USE_TLS=false
+    
+    depends_on:
+      - redis
+      - app
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+  grafana_data:
+  prometheus_data:
+  redis_data:
+    external: false
